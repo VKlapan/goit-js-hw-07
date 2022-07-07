@@ -7,18 +7,19 @@ const createGalleryMarkup = (galleryItems) => {
   const itemLiMarkup = galleryItems
     .map((item) => {
       return `
-        <li class="gallery__item">
-        <a class="gallery__link" href="${item.original}">
-        <img class="gallery__image" src="${item.preview}"
-        alt="${item.description}"
-        data-source="${item.original}">
-        </a>
-        </li>
+        <div class="gallery__item">
+          <a class="gallery__link" href="${item.original}">
+            <img  class="gallery__image"
+                  src="${item.preview}"
+                  alt="${item.description}"
+                  data-source="${item.original}">
+          </a>
+        </div>
         `;
     })
     .join("");
 
-  return `<ul class=gallery> ${itemLiMarkup} </ul>`;
+  return itemLiMarkup;
 };
 const closeModalWindow = (event) => {
   if (event.code != "Escape") {
