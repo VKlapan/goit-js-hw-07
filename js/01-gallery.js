@@ -36,12 +36,12 @@ const removeKeyboardListener = () => {
   document.removeEventListener("keydown", closeModalWindow);
 };
 
-let instance;
+const instance = basicLightbox.create(`<img src="">`);
 
 const modalWindowShow = (event) => {
   event.preventDefault();
   const selectedImgSource = event.target.dataset.source;
-  instance = basicLightbox.create(`<img src="${selectedImgSource}">`);
+  instance.element().querySelector("img").src = selectedImgSource;
   instance.show();
   addKeyboardListener();
 };
