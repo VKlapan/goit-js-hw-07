@@ -7,16 +7,18 @@ const createGalleryMarkup = (galleryItems) => {
   const itemLiMarkup = galleryItems
     .map((item) => {
       return `
+      <li>
         <a class="gallery__item" href="${item.original}">
             <img  class="gallery__image"
                 src="${item.preview}"
                 alt="${item.description}">
         </a>
+      </li>
         `;
     })
     .join("");
 
-  return `<ul class=gallery> ${itemLiMarkup} </ul>`;
+  return itemLiMarkup;
 };
 
 galleryEl.insertAdjacentHTML("afterbegin", createGalleryMarkup(galleryItems));

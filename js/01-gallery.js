@@ -21,6 +21,7 @@ const createGalleryMarkup = (galleryItems) => {
 
   return itemLiMarkup;
 };
+
 const closeModalWindow = (event) => {
   if (event.code != "Escape") {
     return;
@@ -41,6 +42,9 @@ const instance = basicLightbox.create(`<img src="">`);
 
 const modalWindowShow = (event) => {
   event.preventDefault();
+  if (event.target.nodeName != "IMG") {
+    return;
+  }
   const selectedImgSource = event.target.dataset.source;
   instance.element().querySelector("img").src = selectedImgSource;
   instance.show();
