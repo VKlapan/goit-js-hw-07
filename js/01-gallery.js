@@ -26,19 +26,20 @@ const closeModalWindow = (event) => {
   if (event.code != "Escape") {
     return;
   }
-  removeKeyboardListener();
   instance.close();
 };
 
 const addKeyboardListener = () => {
+  //  console.log("LISTENER ADDED");
   document.addEventListener("keydown", closeModalWindow);
 };
 
 const removeKeyboardListener = () => {
+  //  console.log("LISTENER CLOSED");
   document.removeEventListener("keydown", closeModalWindow);
 };
 
-const instance = basicLightbox.create(`<img src="">`);
+let instance;
 
 const modalWindowShow = (event) => {
   event.preventDefault();
@@ -46,9 +47,11 @@ const modalWindowShow = (event) => {
     return;
   }
   const selectedImgSource = event.target.dataset.source;
-  instance.element().querySelector("img").src = selectedImgSource;
+  instance = basicLightbox.create(`<img src="${selectedImgSource}">`, {
+    onClose: removeKeyboardListener,
+    onShow: addKeyboardListener,
+  });
   instance.show();
-  addKeyboardListener();
 };
 
 galleryEl.insertAdjacentHTML("afterbegin", createGalleryMarkup(galleryItems));
