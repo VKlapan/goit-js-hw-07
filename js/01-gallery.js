@@ -1,59 +1,67 @@
 import { galleryItems } from "./gallery-items.js";
 // Change code below this line
 
-const galleryEl = document.querySelector(".gallery");
+// IIFE Imediately Invoked Function Expression
+(function () {
+  "use strict";
 
-const createGalleryMarkup = (galleryItems) => {
-  const itemLiMarkup = galleryItems
-    .map((item) => {
-      return `
-        <div class="gallery__item">
-          <a class="gallery__link" href="${item.original}">
-            <img  class="gallery__image"
-                  src="${item.preview}"
-                  alt="${item.description}"
-                  data-source="${item.original}">
-          </a>
-        </div>
-        `;
-    })
-    .join("");
+  const CLASS_NAME_FOR_DETECT_OPEN_PICT = "gallery__image";
 
-  return itemLiMarkup;
-};
+  const renderGalleryItem = (className) => (item) =>
+    `
+  <div class="gallery__item">
+    <a class="${className}" href="${item.original}">
+      <img  class="gallery__image"
+            src="${item.preview}"
+            alt="${item.description}"
+            data-source="${item.original}">
+    </a>
+  </div>`;
 
-const closeModalWindow = (event) => {
-  if (event.code != "Escape") {
-    return;
+  const createGalleryMarkup = (galleryItems) =>
+    galleryItems
+      .map(renderGalleryItem(CLASS_NAME_FOR_DETECT_OPEN_PICT))
+      .join("");
+
+  const getDOMelement = (selector) => document.querySelector(selector);
+
+  const showModalWindow = (event) => {
+    event.preventDefault();
+
+    if (event.target.className != CLASS_NAME_FOR_DETECT_OPEN_PICT) {
+      return;
+    }
+
+    const closeModalWindow = (event) => {
+      if (event.code != "Escape") {
+        return;
+      }
+      instance.close();
+    };
+
+    const addKeyboardListener = () => {
+      addEventListener("keydown", closeModalWindow);
+    };
+
+    const removeKeyboardListener = () => {
+      removeEventListener("keydown", closeModalWindow);
+    };
+
+    const selectedImgSource = event.target.dataset.source;
+    const instance = basicLightbox.create(`<img src="${selectedImgSource}">`, {
+      onClose: removeKeyboardListener,
+      onShow: addKeyboardListener,
+    });
+
+    instance.show();
+  };
+
+  function start() {
+    const root = getDOMelement(".gallery");
+    root.innerHTML = createGalleryMarkup(galleryItems);
+    // galleryItems
+    root.addEventListener("click", showModalWindow);
   }
-  instance.close();
-};
 
-const addKeyboardListener = () => {
-  //  console.log("LISTENER ADDED");
-  document.addEventListener("keydown", closeModalWindow);
-};
-
-const removeKeyboardListener = () => {
-  //  console.log("LISTENER CLOSED");
-  document.removeEventListener("keydown", closeModalWindow);
-};
-
-let instance;
-
-const modalWindowShow = (event) => {
-  event.preventDefault();
-  if (event.target.nodeName != "IMG") {
-    return;
-  }
-  const selectedImgSource = event.target.dataset.source;
-  instance = basicLightbox.create(`<img src="${selectedImgSource}">`, {
-    onClose: removeKeyboardListener,
-    onShow: addKeyboardListener,
-  });
-  instance.show();
-};
-
-galleryEl.insertAdjacentHTML("afterbegin", createGalleryMarkup(galleryItems));
-
-galleryEl.addEventListener("click", modalWindowShow);
+  window.addEventListener("DOMContentLoaded", start);
+})();
